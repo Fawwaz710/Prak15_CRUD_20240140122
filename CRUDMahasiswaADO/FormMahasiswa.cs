@@ -248,34 +248,19 @@ namespace CRUDMahasiswaADO
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-                    string query = @"
-                        IF OBJECT_ID('dbo.Mahasiswa_Backup') IS NOT NULL
-                        BEGIN
-                            DELETE FROM dbo.Mahasiswa;
-                            INSERT INTO dbo.Mahasiswa
-                            SELECT * FROM dbo.Mahasiswa_Backup;
-                        END";
-                    using (SqlCommand cmd = new SqlCommand(query, connection))
-                    {
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-                MessageBox.Show("Data berhasil direset dari backup");
+                dbLogic.resetData();
+                MessageBox.Show("Data berhasil direset");
                 LoadData();
-                ClearForm();
             }
             catch (SqlException ex)
             {
                 SimpanLog(ex.Message);
-                MessageBox.Show("SQL Error saat reset: " + ex.Message);
+                MessageBox.Show("SQL Error :" + ex.Message);
             }
             catch (Exception ex)
             {
                 SimpanLog(ex.Message);
-                MessageBox.Show("Reset gagal: " + ex.Message);
+                MessageBox.Show("General Error :" + ex.Message);
             }
         }
 
