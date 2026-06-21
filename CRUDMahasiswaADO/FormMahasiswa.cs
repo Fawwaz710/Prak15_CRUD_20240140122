@@ -59,30 +59,19 @@ namespace CRUDMahasiswaADO
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    using (SqlCommand cmd = new SqlCommand("sp_GetMahasiswa", connection))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
+                bindingSource.DataSource = dbLogic.GetMhs();
+                dataGridView1.DataSource = bindingSource;
 
-                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                        {
-                            dtMahasiswa = new DataTable();
-                            da.Fill(dtMahasiswa);
+                // Supaya kolom Foto tampil sebagai gambar
+                DataGridViewImageColumn fotoColumn =
+                    (DataGridViewImageColumn)dataGridView1.Columns["Foto"];
+                fotoColumn.ImageLayout = DataGridViewImageCellLayout.Stretch;
 
-                            bindingSource.DataSource = dtMahasiswa;
-                            dataGridView1.DataSource = bindingSource;
-
-                            BindControls();
-                        }
-                    }
-                }
                 HitungTotal();
-            }
-            catch (SqlException ex)
-            {
-                SimpanLog(ex.Message);
-                MessageBox.Show("SQL Error pada load data: " + ex.Message);
+
+                dataGridView1.Enabled = true;
+                btnImpDb.Enabled = false;
+                btnInsert_Click_2(null, null); // opsional, sesuaikan nama button insert Anda
             }
             catch (Exception ex)
             {
