@@ -31,41 +31,15 @@ namespace CRUDMahasiswaADO
 
             try
             {
-                if (conn.State == ConnectionState.Closed)
-                {
-                    conn.Open();
-                }
+                DataTable dtMahasiswa = dbLogic.getDataRekap(prodi, tglmasuk);
 
-                SqlCommand cmd = new SqlCommand("sp_Report", conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@inProdi", prodi);
-                cmd.Parameters.AddWithValue("@inTglMsuk", tglmasuk.Year);
-
-                da = new SqlDataAdapter(cmd);
-                dtMahasiswa = new DataTable();
-                da.Fill(dtMahasiswa);
-                // Selalu tutup koneksi setelah selesai mengambil data
-                conn.Close();
-
-                MessageBox.Show("Jumlah baris: " + dtMahasiswa.Rows.Count);
-                if (dtMahasiswa.Rows.Count > 0)
-                {
-                    MessageBox.Show("Data pertama - Nama: " + dtMahasiswa.Rows[0]["Nama"].ToString());
-                }
-
-                // PERBAIKAN DI SINI: Panggil menggunakan nama objek variabel yang baru (rptMahasiswa)
-                rptMahasiswa.SetDataSource(dtMahasiswa);
-                crystalReportViewer1.ReportSource = rptMahasiswa;
+                listMahasiswa.SetDataSource(dtMahasiswa);
+                crystalReportViewer1.ReportSource = listMahasiswa;
                 crystalReportViewer1.Refresh();
             }
             catch (Exception ex)
             {
-                // Pastikan koneksi ditutup jika terjadi error di tengah jalan
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
-                MessageBox.Show("Gagal Load data: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Gagal load data: " + ex.Message);
             }
         }
 

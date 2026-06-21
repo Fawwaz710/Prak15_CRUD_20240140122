@@ -13,6 +13,8 @@ namespace CRUDMahasiswaADO
 {
     public partial class RekapMahasiswa : Form
     {
+        DAL dbLogic = new DAL();
+
         static string connectionString = "Data Source=KAIDEN\\BLAZE;Initial Catalog=DBAkademikADO;User ID=sa;Password=towinnadzul09122005";
 
         SqlConnection conn = new SqlConnection(connectionString);
