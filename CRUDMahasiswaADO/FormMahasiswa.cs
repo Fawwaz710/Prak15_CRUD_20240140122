@@ -71,24 +71,6 @@ namespace CRUDMahasiswaADO
                 MessageBox.Show("Gagal load data: " + ex.Message);
             }
         }
-
-        private void BindControls()
-        {
-            txtNIM.DataBindings.Clear();
-            txtNama.DataBindings.Clear();
-            cmbJK.DataBindings.Clear();
-            dtpTanggalLahir.DataBindings.Clear();
-            txtAlamat.DataBindings.Clear();
-            txtKodeProdi.DataBindings.Clear();
-
-            txtNIM.DataBindings.Add("Text", bindingSource, "NIM");
-            txtNama.DataBindings.Add("Text", bindingSource, "Nama");
-            cmbJK.DataBindings.Add("Text", bindingSource, "JenisKelamin");
-            dtpTanggalLahir.DataBindings.Add("Value", bindingSource, "TanggalLahir");
-            txtAlamat.DataBindings.Add("Text", bindingSource, "Alamat");
-            txtKodeProdi.DataBindings.Add("Text", bindingSource, "KodeProdi");
-        }
-
         private void ClearForm()
         {
             txtNIM.Enabled = true;
@@ -106,13 +88,13 @@ namespace CRUDMahasiswaADO
 
         private void FormMahasiswa_Load_1(object sender, EventArgs e)
         {
-            // TODO: This line of code loads data into the 'dBAkademikADODataSet.Mahasiswa' table. You can move, or remove it, as needed.
             this.mahasiswaTableAdapter2.Fill(this.dBAkademikADODataSet.Mahasiswa);
-            // TODO: This line of code loads data into the 'dBAkademikADODataSet11.Mahasiswa' table. You can move, or remove it, as needed.
             this.mahasiswaTableAdapter1.Fill(this.dBAkademikADODataSet11.Mahasiswa);
+
             cmbJK.Items.Clear();
             cmbJK.Items.Add("L");
             cmbJK.Items.Add("P");
+            cmbJK.SelectedIndex = -1; // tambahkan ini
 
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.MultiSelect = false;
@@ -131,6 +113,23 @@ namespace CRUDMahasiswaADO
         // ====== TOMBOL INSERT (MENDUKUNG LOGAKTIVITAS & TRANSAKSI) ======
         private void btnInsert_Click_2(object sender, EventArgs e)
         {
+            // Validasi input
+            if (string.IsNullOrEmpty(txtNIM.Text))
+            {
+                MessageBox.Show("NIM tidak boleh kosong!");
+                return;
+            }
+            if (cmbJK.SelectedIndex == -1)
+            {
+                MessageBox.Show("Pilih Jenis Kelamin terlebih dahulu!");
+                return;
+            }
+            if (string.IsNullOrEmpty(txtKodeProdi.Text))
+            {
+                MessageBox.Show("Kode Prodi tidak boleh kosong!");
+                return;
+            }
+
             try
             {
                 byte[] ConvertImageToBytes(System.Windows.Forms.PictureBox pb)
@@ -147,12 +146,12 @@ namespace CRUDMahasiswaADO
                                   : null;
 
                 dbLogic.InsertMhs(
-                    txtNIM.Text,
-                    txtNama.Text,
-                    txtAlamat.Text,
-                    cmbJK.Text,
+                    txtNIM.Text.Trim(),
+                    txtNama.Text.Trim(),
+                    txtAlamat.Text.Trim(),
+                    cmbJK.SelectedItem.ToString(), // pakai SelectedItem bukan Text
                     dtpTanggalLahir.Value.Date,
-                    txtKodeProdi.Text,
+                    txtKodeProdi.Text.Trim(),
                     imgBytes);
 
                 MessageBox.Show("Data mahasiswa berhasil ditambahkan");
