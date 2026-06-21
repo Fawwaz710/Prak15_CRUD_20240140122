@@ -142,8 +142,8 @@ namespace CRUDMahasiswaADO
 
         // ======= UPDATE (dengan foto) =======
         public void UpdateMhs(string nim, string nama, string alamat,
-                              string jenisKelamin, DateTime tanggalLahir,
-                              string kodeProdi, byte[] foto)
+                      string jenisKelamin, DateTime tanggalLahir,
+                      string kodeProdi, byte[] foto)
         {
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
@@ -151,14 +151,14 @@ namespace CRUDMahasiswaADO
             SqlCommand command = new SqlCommand("sp_UpdateMahasiswa", conn);
             command.CommandType = CommandType.StoredProcedure;
 
-            command.Parameters.AddWithValue("@NIM", nim);
-            command.Parameters.AddWithValue("@Nama", nama);
-            command.Parameters.AddWithValue("@Alamat", alamat);
-            command.Parameters.AddWithValue("@JenisKelamin", jenisKelamin);
-            command.Parameters.AddWithValue("@TanggalLahir", tanggalLahir);
-            command.Parameters.AddWithValue("@KodeProdi", kodeProdi);
-            command.Parameters.AddWithValue("@pFoto",
-                (object)foto ?? DBNull.Value);
+            // Sesuaikan nama parameter dengan SP (pakai prefix p)
+            command.Parameters.AddWithValue("@pNIM", nim);
+            command.Parameters.AddWithValue("@pNama", nama);
+            command.Parameters.AddWithValue("@pAlamat", alamat);
+            command.Parameters.AddWithValue("@pJenisKelamin", jenisKelamin);
+            command.Parameters.AddWithValue("@pTanggalLahir", tanggalLahir);
+            command.Parameters.AddWithValue("@pKodeProdi", kodeProdi);
+            command.Parameters.AddWithValue("@pFoto", (object)foto ?? DBNull.Value);
 
             command.ExecuteNonQuery();
         }
