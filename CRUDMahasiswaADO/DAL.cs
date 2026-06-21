@@ -187,12 +187,15 @@ namespace CRUDMahasiswaADO
                 conn.Open();
 
             string query = @"
-                IF OBJECT_ID('dbo.Mahasiswa_Backup') IS NOT NULL
-                BEGIN
-                    DELETE FROM dbo.Mahasiswa;
-                    INSERT INTO dbo.Mahasiswa
-                    SELECT * FROM dbo.Mahasiswa_Backup;
-                END";
+        IF OBJECT_ID('dbo.Mahasiswa_Backup') IS NOT NULL
+        BEGIN
+            DELETE FROM dbo.Mahasiswa;
+            INSERT INTO dbo.Mahasiswa
+                (NIM, Nama, JenisKelamin, TanggalLahir, Alamat, KodeProdi, TanggalDaftar, foto)
+            SELECT 
+                NIM, Nama, JenisKelamin, TanggalLahir, Alamat, KodeProdi, TanggalDaftar, NULL
+            FROM dbo.Mahasiswa_Backup;
+        END";
 
             SqlCommand cmd = new SqlCommand(query, conn);
             cmd.ExecuteNonQuery();
