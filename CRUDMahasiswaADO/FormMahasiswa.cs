@@ -176,35 +176,41 @@ namespace CRUDMahasiswaADO
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                byte[] ConvertImageToBytes(System.Windows.Forms.PictureBox pb)
                 {
-                    using (SqlCommand cmd = new SqlCommand("sp_UpdateMahasiswa", connection))
+                    using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
                     {
-                        cmd.CommandType = CommandType.StoredProcedure;
-
-                        cmd.Parameters.AddWithValue("@NIM", txtNIM.Text);
-                        cmd.Parameters.AddWithValue("@Nama", txtNama.Text);
-                        cmd.Parameters.AddWithValue("@JenisKelamin", cmbJK.Text);
-                        cmd.Parameters.AddWithValue("@TanggalLahir", dtpTanggalLahir.Value.Date);
-                        cmd.Parameters.AddWithValue("@Alamat", txtAlamat.Text);
-                        cmd.Parameters.AddWithValue("@KodeProdi", txtKodeProdi.Text);
-
-                        connection.Open();
-                        cmd.ExecuteNonQuery();
+                        pb.Image.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                        return ms.ToArray();
                     }
                 }
-                MessageBox.Show("Data berhasil diupdate");
-                LoadData();
+
+                byte[] imgBytes = fotoMhs.Image != null
+                                  ? ConvertImageToBytes(fotoMhs)
+                                  : null;
+
+                dbLogic.UpdateMhs(
+                    txtNIM.Text,
+                    txtNama.Text,
+                    txtAlamat.Text,
+                    cmbJK.Text,
+                    dtpTanggalLahir.Value.Date,
+                    txtKodeProdi.Text,
+                    imgBytes);
+
+                MessageBox.Show("Data mahasiswa berhasil diubah");
+                ClearForm();
+                btnLoad_Click(null, null);
             }
             catch (SqlException ex)
             {
                 SimpanLog(ex.Message);
-                MessageBox.Show("SQL Error: " + ex.Message);
+                MessageBox.Show("SQL Error :" + ex.Message);
             }
             catch (Exception ex)
             {
                 SimpanLog(ex.Message);
-                MessageBox.Show("General Error: " + ex.Message);
+                MessageBox.Show("General Error :" + ex.Message);
             }
         }
 
