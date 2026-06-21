@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Web.Services.Description;
 using System.Windows.Forms;
 
 namespace CRUDMahasiswaADO
@@ -25,17 +26,7 @@ namespace CRUDMahasiswaADO
         // ================== METHOD LOGGING (Sesuai Struktur Tabel LogError) ==================
         private void SimpanLog(string pesan)
         {
-            using (SqlConnection connectionLogError = new SqlConnection(connectionString))
-            {
-                // Disesuaikan dengan kolom tabel LogError: waktu, pesan_error
-                string query = "INSERT INTO LogError (waktu, pesan_error) VALUES (GETDATE(), @pesan)";
-                using (SqlCommand cmd = new SqlCommand(query, connectionLogError))
-                {
-                    cmd.Parameters.AddWithValue("@pesan", pesan);
-                    connectionLogError.Open();
-                    cmd.ExecuteNonQuery();
-                }
-            }
+            dbLogic.InsertLog(message);
         }
 
         // ================== LOGIKA UTAMA (STORED PROCEDURE) ==================
