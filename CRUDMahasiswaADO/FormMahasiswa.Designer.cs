@@ -472,6 +472,7 @@
             this.btnImpDB.TabIndex = 26;
             this.btnImpDB.Text = "Import to Database";
             this.btnImpDB.UseVisualStyleBackColor = true;
+            this.btnImpDB.Click += new System.EventHandler(this.btnImpDB_Click);
             // 
             // fotoMhs
             // 
