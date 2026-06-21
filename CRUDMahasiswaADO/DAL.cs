@@ -97,8 +97,8 @@ namespace CRUDMahasiswaADO
 
         // ======= INSERT (dengan foto) =======
         public void InsertMhs(string nim, string nama, string alamat,
-                              string jenisKelamin, DateTime tanggalLahir,
-                              string kodeProdi, byte[] foto)
+                      string jenisKelamin, DateTime tanggalLahir,
+                      string kodeProdi, byte[] foto)
         {
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
@@ -109,20 +109,17 @@ namespace CRUDMahasiswaADO
                 SqlCommand command = new SqlCommand("sp_InsertMahasiswa", conn, trans);
                 command.CommandType = CommandType.StoredProcedure;
 
-                command.Parameters.AddWithValue("@NIM", nim);
-                command.Parameters.AddWithValue("@Nama", nama);
-                command.Parameters.AddWithValue("@Alamat", alamat);
-                command.Parameters.AddWithValue("@JenisKelamin", jenisKelamin);
-                command.Parameters.AddWithValue("@TanggalLahir", tanggalLahir);
-                command.Parameters.AddWithValue("@KodeProdi", kodeProdi);
-                command.Parameters.AddWithValue("@TanggalDaftar", DateTime.Now);
-                // Parameter foto — jika null kirim DBNull
-                command.Parameters.AddWithValue("@pFoto",
-                    (object)foto ?? DBNull.Value);
+                // Sesuaikan nama parameter dengan SP (pakai prefix p)
+                command.Parameters.AddWithValue("@pNIM", nim);
+                command.Parameters.AddWithValue("@pNama", nama);
+                command.Parameters.AddWithValue("@pAlamat", alamat);
+                command.Parameters.AddWithValue("@pJenisKelamin", jenisKelamin);
+                command.Parameters.AddWithValue("@pTanggalLahir", tanggalLahir);
+                command.Parameters.AddWithValue("@pKodeProdi", kodeProdi);
+                command.Parameters.AddWithValue("@pFoto", (object)foto ?? DBNull.Value);
 
                 command.ExecuteNonQuery();
 
-                // Log aktivitas (sesuai tabel LogAktivitas Anda)
                 SqlCommand cmdLog = new SqlCommand(
                     "INSERT INTO LogAktivitas (aktivitas, waktu) VALUES (@aktivitas, GETDATE())",
                     conn, trans);
@@ -135,7 +132,7 @@ namespace CRUDMahasiswaADO
             catch (Exception)
             {
                 trans.Rollback();
-                throw; // lempar ke pemanggil agar bisa ditangkap di Form
+                throw;
             }
             finally
             {
