@@ -338,9 +338,23 @@ namespace CRUDMahasiswaADO
 
                 txtNIM.Enabled = false;
             }
+        }
 
+        private void btnUpload_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
+
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                fotoMhs.Image = System.Drawing.Image.FromFile(ofd.FileName);
+                fotoMhs.SizeMode = PictureBoxSizeMode.StretchImage;
+            }
 
         }
+
+
+
         private void txtKodeProdi_TextChanged(object sender, EventArgs e) { }
         private void bindingNavigatorPositionItem_Click(object sender, EventArgs e) { }
         private void lblTotal_Click(object sender, EventArgs e) { }
@@ -352,5 +366,7 @@ namespace CRUDMahasiswaADO
             fm2.Show();
             this.Hide();
         }
+
+
     }
 }
