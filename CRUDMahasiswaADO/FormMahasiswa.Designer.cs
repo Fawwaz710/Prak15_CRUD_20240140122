@@ -462,6 +462,7 @@
             this.btnImpExcel.TabIndex = 25;
             this.btnImpExcel.Text = "Import from Excel";
             this.btnImpExcel.UseVisualStyleBackColor = true;
+            this.btnImpExcel.Click += new System.EventHandler(this.btnImpExcel_Click);
             // 
             // btnImpDB
             // 

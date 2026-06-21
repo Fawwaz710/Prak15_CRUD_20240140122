@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExcelDataReader;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Web.Services.Description;
@@ -353,6 +354,42 @@ namespace CRUDMahasiswaADO
 
         }
 
+        private void btnImpExcel_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog =
+           new OpenFileDialog { Filter = "Excel Workbook| *.xlsx" })
+            {
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = openFileDialog.FileName;
+                    using (var stream = System.IO.File.Open(
+                           filePath, System.IO.FileMode.Open,
+                           System.IO.FileAccess.Read))
+                    {
+                        using (var reader =
+                               ExcelDataReader.ExcelReaderFactory.CreateReader(stream))
+                        {
+                            var result = reader.AsDataSet(
+                                new ExcelDataReader.ExcelDataSetConfiguration()
+                                {
+                                    ConfigureDataTable = (_) =>
+                                        new ExcelDataReader.ExcelDataTableConfiguration()
+                                        {
+                                            UseHeaderRow = true
+                                        }
+                                });
+
+                            DataTable dt = result.Tables[0];
+                            dataGridView1.DataSource = dt;
+                            dataGridView1.Enabled = false;
+
+                            btnImpDb.Enabled = true;
+                            btnInsert_Click_2(null, null); // nonaktifkan tombol lain
+                        }
+                    }
+                }
+            }
+        }
 
 
         private void txtKodeProdi_TextChanged(object sender, EventArgs e) { }
