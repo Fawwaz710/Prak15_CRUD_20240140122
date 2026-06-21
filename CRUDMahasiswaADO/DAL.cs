@@ -229,7 +229,8 @@ namespace CRUDMahasiswaADO
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
 
-            SqlCommand cmd = new SqlCommand("select namaprodi from prodi", conn);
+            // Sesuaikan dengan nama tabel dan kolom yang benar
+            SqlCommand cmd = new SqlCommand("select NamaProdi from programstudi", conn);
             cmd.CommandType = CommandType.Text;
             dtProdi = new DataTable();
             da = new SqlDataAdapter(cmd);
