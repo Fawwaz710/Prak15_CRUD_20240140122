@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Data.SqlClient;
+using System.Windows.Forms;
 
 namespace CRUDMahasiswaADO
 {
@@ -15,17 +9,14 @@ namespace CRUDMahasiswaADO
     {
         DAL dbLogic = new DAL();
 
-        static string connectionString = "Data Source=KAIDEN\\BLAZE;Initial Catalog=DBAkademikADO;User ID=sa;Password=towinnadzul09122005";
 
-        SqlConnection conn = new SqlConnection(connectionString);
-        SqlDataAdapter da;
-        DataTable dtMahasiswa;
-        DataTable dtProdi;
+        DataTable dtMahasiswa; 
 
         public RekapMahasiswa()
         {
             InitializeComponent();
         }
+
         private void Form2_Load_1(object sender, EventArgs e)
         {
             dtpTanggalMasuk.Format = DateTimePickerFormat.Custom;
@@ -35,21 +26,12 @@ namespace CRUDMahasiswaADO
             dtpTanggalMasuk.MaxDate = DateTime.Now;
 
             cmbProdi.DropDownStyle = ComboBoxStyle.DropDownList;
-
             btnCetak.Enabled = false;
 
             try
             {
-                if (conn.State == ConnectionState.Closed)
-                {
-                    conn.Open();
-                }
-
-                SqlCommand cmd = new SqlCommand("select namaprodi from programstudi", conn);
-                cmd.CommandType = CommandType.Text;
-                dtProdi = new DataTable();
-                da = new SqlDataAdapter(cmd);
-                da.Fill(dtProdi);
+                // Pakai DAL untuk load prodi
+                DataTable dtProdi = dbLogic.getProdi();
                 cmbProdi.DataSource = dtProdi;
                 cmbProdi.DisplayMember = "namaprodi";
                 cmbProdi.ValueMember = "namaprodi";
@@ -64,20 +46,10 @@ namespace CRUDMahasiswaADO
         {
             try
             {
-                if (conn.State == ConnectionState.Closed)
-                {
-                    conn.Open();
-                }
-
-                SqlCommand cmd = new SqlCommand("sp_Report", conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add("@inProdi", SqlDbType.VarChar, 50).Value = cmbProdi.SelectedValue;
-                cmd.Parameters.Add("@inTglMsuk", SqlDbType.VarChar, 4).Value = dtpTanggalMasuk.Value.Year.ToString();
-
-                da = new SqlDataAdapter(cmd);
-
-                dtMahasiswa = new DataTable();
-                da.Fill(dtMahasiswa);
+                // Pakai DAL untuk load rekap
+                dtMahasiswa = dbLogic.getDataRekap(
+                    cmbProdi.SelectedValue.ToString(),
+                    dtpTanggalMasuk.Value);
 
                 dataGridView1.DataSource = dtMahasiswa;
 
@@ -97,14 +69,13 @@ namespace CRUDMahasiswaADO
             }
         }
 
-        // Poin 14: Event Cetak
         private void btnCetak_Click_1(object sender, EventArgs e)
         {
-            Report frm2 = new Report(cmbProdi.SelectedValue.ToString(), dtpTanggalMasuk.Value);
+            Report frm2 = new Report(
+                cmbProdi.SelectedValue.ToString(),
+                dtpTanggalMasuk.Value);
             frm2.Show();
             this.Hide();
         }
-
-
     }
 }
