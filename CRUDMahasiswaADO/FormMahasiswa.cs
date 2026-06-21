@@ -27,7 +27,7 @@ namespace CRUDMahasiswaADO
         // ================== METHOD LOGGING (Sesuai Struktur Tabel LogError) ==================
         private void SimpanLog(string pesan)
         {
-            dbLogic.InsertLog(message);
+            dbLogic.InsertLog(pesan);
         }
 
         // ================== LOGIKA UTAMA (STORED PROCEDURE) ==================
@@ -62,7 +62,7 @@ namespace CRUDMahasiswaADO
                 HitungTotal();
 
                 dataGridView1.Enabled = true;
-                btnImpDb.Enabled = false;
+                btnImpDB.Enabled = false;
                 btnInsert_Click_2(null, null); // opsional, sesuaikan nama button insert Anda
             }
             catch (Exception ex)
@@ -297,13 +297,18 @@ namespace CRUDMahasiswaADO
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                // Ganti pakai DAL
+                using (SqlConnection connection =
+                       new SqlConnection(dbLogic.GetConnectionString()))
                 {
                     connection.Open();
                     MessageBox.Show("Koneksi berhasil ke " + connection.Database);
                 }
             }
-            catch (Exception ex) { MessageBox.Show("Koneksi gagal: " + ex.Message); }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Koneksi gagal: " + ex.Message);
+            }
         }
 
         private void btnLoad_Click(object sender, EventArgs e) { LoadData(); }
@@ -383,7 +388,7 @@ namespace CRUDMahasiswaADO
                             dataGridView1.DataSource = dt;
                             dataGridView1.Enabled = false;
 
-                            btnImpDb.Enabled = true;
+                            btnImpDB.Enabled = true;
                             btnInsert_Click_2(null, null); // nonaktifkan tombol lain
                         }
                     }
@@ -453,11 +458,6 @@ namespace CRUDMahasiswaADO
             }
         }
 
-        private void txtKodeProdi_TextChanged(object sender, EventArgs e) { }
-        private void bindingNavigatorPositionItem_Click(object sender, EventArgs e) { }
-        private void lblTotal_Click(object sender, EventArgs e) { }
-        private void btnUpdate_Click_2(object sender, EventArgs e) { button1_Click(sender, e); }
-
         private void BtnRekap_Click(object sender, EventArgs e)
         {
             RekapMahasiswa fm2 = new RekapMahasiswa();
@@ -465,6 +465,10 @@ namespace CRUDMahasiswaADO
             this.Hide();
         }
 
+        private void txtKodeProdi_TextChanged(object sender, EventArgs e) { }
+        private void bindingNavigatorPositionItem_Click(object sender, EventArgs e) { }
+        private void lblTotal_Click(object sender, EventArgs e) { }
+        private void btnUpdate_Click_2(object sender, EventArgs e) { button1_Click(sender, e); }
 
     }
 }
