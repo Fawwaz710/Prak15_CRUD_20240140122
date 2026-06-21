@@ -8,13 +8,15 @@ namespace CRUDMahasiswaADO
 {
     public class DAL
     {
-        static string connectionString =
+        private static string connectionString =
             $"Data Source={GetLoacalIPAddress()};Initial Catalog=DBAkademikADO;User ID=sa;Password=towinnadzul09122005";
+
         public string GetConnectionString()
         {
             return connectionString;
         }
 
+        // Sekarang bisa pakai connectionString langsung
         SqlConnection conn = new SqlConnection(connectionString);
 
         SqlDataAdapter da;
