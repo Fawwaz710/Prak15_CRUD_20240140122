@@ -11,7 +11,7 @@ using System.Data.SqlClient;
 
 namespace CRUDMahasiswaADO
 {
-    public partial class Form2 : Form
+    public partial class RekapMahasiswa : Form
     {
         static string connectionString = "Data Source=KAIDEN\\BLAZE;Initial Catalog=DBAkademikADO;User ID=sa;Password=towinnadzul09122005";
 
@@ -20,7 +20,7 @@ namespace CRUDMahasiswaADO
         DataTable dtMahasiswa;
         DataTable dtProdi;
 
-        public Form2()
+        public RekapMahasiswa()
         {
             InitializeComponent();
         }

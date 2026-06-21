@@ -1,6 +1,6 @@
 ﻿namespace CRUDMahasiswaADO
 {
-    partial class Form2
+    partial class RekapMahasiswa
     {
         /// <summary>
         /// Required designer variable.

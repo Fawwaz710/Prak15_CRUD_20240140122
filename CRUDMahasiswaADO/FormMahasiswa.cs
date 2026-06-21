@@ -7,10 +7,11 @@ namespace CRUDMahasiswaADO
 {
     public partial class FormMahasiswa : Form
     {
-        // 1. Konfigurasi Koneksi Database Utama
-        private readonly SqlConnection conn;
-        private readonly string connectionString =
-            "Data Source=KAIDEN\\BLAZE;Initial Catalog=DBAkademikADO;Integrated Security=True";
+        DAL dbLogic = new DAL();
+        
+        
+        //private readonly SqlConnection conn;
+        //private readonly string connectionString ="Data Source=KAIDEN\\BLAZE;Initial Catalog=DBAkademikADO;Integrated Security=True";
 
         private BindingSource bindingSource = new BindingSource();
         private DataTable dtMahasiswa = new DataTable();
@@ -380,7 +381,7 @@ namespace CRUDMahasiswaADO
 
         private void BtnRekap_Click(object sender, EventArgs e)
         {
-            Form2 fm2 = new Form2();
+            RekapMahasiswa fm2 = new RekapMahasiswa();
             fm2.Show();
             this.Hide();
         }
