@@ -130,60 +130,43 @@ namespace CRUDMahasiswaADO
         // ====== TOMBOL INSERT (MENDUKUNG LOGAKTIVITAS & TRANSAKSI) ======
         private void btnInsert_Click_2(object sender, EventArgs e)
         {
-            SqlConnection conn = new SqlConnection(connectionString);
-            conn.Open();
-            SqlTransaction trans = conn.BeginTransaction();
-
             try
             {
-                // Perintah 1: Eksekusi Stored Procedure Mahasiswa (Memicu trg_InsertMahasiswa di database)
-                SqlCommand cmd = new SqlCommand("sp_InsertMahasiswa", conn, trans);
-                cmd.CommandType = CommandType.StoredProcedure;
+                byte[] ConvertImageToBytes(System.Windows.Forms.PictureBox pb)
+                {
+                    using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+                    {
+                        pb.Image.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                        return ms.ToArray();
+                    }
+                }
 
-                cmd.Parameters.AddWithValue("@NIM", txtNIM.Text);
-                cmd.Parameters.AddWithValue("@Nama", txtNama.Text);
-                cmd.Parameters.AddWithValue("@JenisKelamin", cmbJK.Text);
-                cmd.Parameters.AddWithValue("@TanggalLahir", dtpTanggalLahir.Value.Date);
-                cmd.Parameters.AddWithValue("@Alamat", txtAlamat.Text);
-                cmd.Parameters.AddWithValue("@KodeProdi", txtKodeProdi.Text);
-                cmd.Parameters.AddWithValue("@TanggalDaftar", DateTime.Now);
+                byte[] imgBytes = fotoMhs.Image != null
+                                  ? ConvertImageToBytes(fotoMhs)
+                                  : null;
 
-                cmd.ExecuteNonQuery();
+                dbLogic.InsertMhs(
+                    txtNIM.Text,
+                    txtNama.Text,
+                    txtAlamat.Text,
+                    cmbJK.Text,
+                    dtpTanggalLahir.Value.Date,
+                    txtKodeProdi.Text,
+                    imgBytes);
 
-                // Perintah 2: Eksekusi Log Manual Aplikasi (Sesuai kolom tabel LogAktivitas: aktivitas, waktu)
-                // Catatan Praktikum 12: Ganti "LogAktivitas" menjadi "LogAktivitasSalah" untuk simulasi Rollback
-                SqlCommand cmdLog = new SqlCommand(
-                    "INSERT INTO LogAktivitas (aktivitas, waktu) VALUES (@aktivitas, GETDATE())", conn, trans);
-
-                cmdLog.Parameters.AddWithValue("@aktivitas", "INSERT MANUAL VIA APP - NIM: " + txtNIM.Text);
-                cmdLog.ExecuteNonQuery();
-
-                // Jika kedua proses di atas sukses tanpa kendala, simpan permanen
-                trans.Commit();
-                MessageBox.Show("Data berhasil ditambahkan");
-
-                LoadData();
+                MessageBox.Show("Data mahasiswa berhasil ditambahkan");
                 ClearForm();
+                LoadData();
             }
             catch (SqlException ex)
             {
-                // Rollback otomatis jika ada constraint error (misal NIM duplikat) atau tabel salah
-                trans.Rollback();
-                SimpanLog("ROLLBACK INSERT: " + ex.Message);
-                MessageBox.Show("SQL Error (Transaksi Di-Rollback): " + ex.Message);
+                SimpanLog("Rollback Insert : " + ex.Message);
+                MessageBox.Show("SQL Error :" + ex.Message);
             }
             catch (Exception ex)
             {
-                trans.Rollback();
-                SimpanLog("ROLLBACK INSERT: " + ex.Message);
-                MessageBox.Show("General Error (Transaksi Di-Rollback): " + ex.Message);
-            }
-            finally
-            {
-                if (conn.State == ConnectionState.Open)
-                {
-                    conn.Close();
-                }
+                SimpanLog("General Error :" + ex.Message);
+                MessageBox.Show("General Error :" + ex.Message);
             }
         }
 
