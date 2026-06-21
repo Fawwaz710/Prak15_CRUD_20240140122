@@ -19,7 +19,7 @@ namespace CRUDMahasiswaADO
         public FormMahasiswa()
         {
             InitializeComponent();
-            conn = new SqlConnection(connectionString);
+            //conn = new SqlConnection(connectionString);
         }
 
         // ================== METHOD LOGGING (Sesuai Struktur Tabel LogError) ==================
@@ -44,35 +44,14 @@ namespace CRUDMahasiswaADO
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    using (SqlCommand cmd = new SqlCommand("sp_CountMahasiswa", connection))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-
-                        SqlParameter outputParam = new SqlParameter("@Total", SqlDbType.Int);
-                        outputParam.Direction = ParameterDirection.Output;
-                        cmd.Parameters.Add(outputParam);
-
-                        connection.Open();
-                        cmd.ExecuteNonQuery();
-
-                        if (lblTotal != null)
-                        {
-                            lblTotal.Text = "Total Mahasiswa: " + outputParam.Value.ToString();
-                        }
-                    }
-                }
-            }
-            catch (SqlException ex)
-            {
-                SimpanLog(ex.Message);
-                MessageBox.Show("SQL Error pada hitung total: " + ex.Message);
+                int total = (dbLogic.CountMhs().Equals(DBNull.Value))
+                            ? 0 : dbLogic.CountMhs();
+                lblTotal.Text = "Total Mahasiswa : " + total;
             }
             catch (Exception ex)
             {
                 SimpanLog(ex.Message);
-                MessageBox.Show("Gagal menghitung total: " + ex.Message);
+                MessageBox.Show("Gagal load data: " + ex.Message);
             }
         }
 
