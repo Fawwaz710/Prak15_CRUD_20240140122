@@ -216,35 +216,31 @@ namespace CRUDMahasiswaADO
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Yakin ingin menghapus data?", "Konfirmasi", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            try
             {
-                try
-                {
-                    using (SqlConnection connection = new SqlConnection(connectionString))
-                    {
-                        using (SqlCommand cmd = new SqlCommand("sp_DeleteMahasiswa", connection))
-                        {
-                            cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.Parameters.Add("@NIM", SqlDbType.Char, 11).Value = txtNIM.Text;
+                DialogResult dg = MessageBox.Show(
+                    "Yakin ingin menghapus data?",
+                    "Konfirmasi",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
 
-                            connection.Open();
-                            cmd.ExecuteNonQuery(); // Memicu trg_DeleteMahasiswa di database
-
-                            MessageBox.Show("Data mahasiswa berhasil dihapus");
-                        }
-                    }
-                    LoadData();
-                }
-                catch (SqlException ex)
+                if (dg == DialogResult.Yes)
                 {
-                    SimpanLog(ex.Message);
-                    MessageBox.Show("SQL Error: " + ex.Message);
+                    dbLogic.DeleteMhs(txtNIM.Text);
+                    MessageBox.Show("Data mahasiswa berhasil dihapus");
+                    ClearForm();
+                    btnLoad_Click(null, null);
                 }
-                catch (Exception ex)
-                {
-                    SimpanLog(ex.Message);
-                    MessageBox.Show("Gagal Hapus: " + ex.Message);
-                }
+            }
+            catch (SqlException ex)
+            {
+                SimpanLog(ex.Message);
+                MessageBox.Show("SQL Error :" + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                SimpanLog(ex.Message);
+                MessageBox.Show("General Error :" + ex.Message);
             }
         }
 
