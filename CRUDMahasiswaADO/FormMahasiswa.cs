@@ -99,7 +99,14 @@ namespace CRUDMahasiswaADO
 
         private void ClearForm()
         {
-            bindingSource.AddNew();
+            txtNIM.Enabled = true;
+            txtNIM.Clear();
+            txtNama.Clear();
+            cmbJK.SelectedIndex = -1;
+            txtAlamat.Clear();
+            txtKodeProdi.Clear();
+            dtpTanggalLahir.Value = DateTime.Now;
+            fotoMhs.Image = null;
             txtNIM.Focus();
         }
 
